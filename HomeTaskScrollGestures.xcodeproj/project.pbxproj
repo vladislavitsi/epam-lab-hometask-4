@@ -13,6 +13,7 @@
 		DDF0FA2220729D3800EAAD08 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DDF0FA2120729D3800EAAD08 /* Assets.xcassets */; };
 		DDF0FA2520729D3800EAAD08 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DDF0FA2320729D3800EAAD08 /* LaunchScreen.storyboard */; };
 		DDF0FA2820729D3800EAAD08 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = DDF0FA2720729D3800EAAD08 /* main.m */; };
+		DDF0FA302072B9AB00EAAD08 /* UIParallGestureRecognizer.m in Sources */ = {isa = PBXBuildFile; fileRef = DDF0FA2F2072B9AB00EAAD08 /* UIParallGestureRecognizer.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +27,8 @@
 		DDF0FA2420729D3800EAAD08 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		DDF0FA2620729D3800EAAD08 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DDF0FA2720729D3800EAAD08 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		DDF0FA2E2072B9AB00EAAD08 /* UIParallGestureRecognizer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UIParallGestureRecognizer.h; sourceTree = "<group>"; };
+		DDF0FA2F2072B9AB00EAAD08 /* UIParallGestureRecognizer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UIParallGestureRecognizer.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -67,6 +70,8 @@
 				DDF0FA2320729D3800EAAD08 /* LaunchScreen.storyboard */,
 				DDF0FA2620729D3800EAAD08 /* Info.plist */,
 				DDF0FA2720729D3800EAAD08 /* main.m */,
+				DDF0FA2E2072B9AB00EAAD08 /* UIParallGestureRecognizer.h */,
+				DDF0FA2F2072B9AB00EAAD08 /* UIParallGestureRecognizer.m */,
 			);
 			path = HomeTaskScrollGestures;
 			sourceTree = "<group>";
@@ -145,6 +150,7 @@
 				DDF0FA1D20729D3800EAAD08 /* ViewController.m in Sources */,
 				DDF0FA2820729D3800EAAD08 /* main.m in Sources */,
 				DDF0FA1A20729D3800EAAD08 /* AppDelegate.m in Sources */,
+				DDF0FA302072B9AB00EAAD08 /* UIParallGestureRecognizer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
