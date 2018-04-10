@@ -44,6 +44,8 @@
     UIParallGestureRecognizer *customGesture = [[UIParallGestureRecognizer alloc] initWithTarget:self action:@selector(onCustomGesture)];
     [self.view addGestureRecognizer:customGesture];
     
+    [self.scrollView.panGestureRecognizer requireGestureRecognizerToFail:customGesture];
+    
     self.textFields = [NSArray arrayWithObjects:
                        self.nameField,
                        self.nickField,

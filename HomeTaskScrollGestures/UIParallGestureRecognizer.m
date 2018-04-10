@@ -8,7 +8,6 @@
 
 #import "UIParallGestureRecognizer.h"
 
-#define countOfTouchesRequired 2
 #define initialDistanceBetweenTouches 100
 
 @interface UIParallGestureRecognizer ()
@@ -21,8 +20,10 @@
 @property (nonatomic, assign) CGPoint currPoint1;
 @property (nonatomic, assign) CGPoint currPoint2;
 
-- (void)saveFirstState:(NSSet<UITouch *> *)ts;
-- (BOOL)checkMovedState;
+@property (nonatomic, assign) NSInteger touchesCounter;
+
+- (void)saveFirstStateAndCheck:(NSArray<UITouch *> *)ts;
+- (void)updateState;
 - (BOOL)isOkDistanceBetweenTouches;
 - (BOOL)checkFinalState;
 - (void)resetState;
@@ -33,29 +34,27 @@
 // BEGIN
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
     [super touchesBegan:touches withEvent:event];
-    if (touches.count != countOfTouchesRequired) {
-        self.state = UIGestureRecognizerStateFailed;
-        return;
-    }
-    
-    if (self.touch1 == nil && self.touch2 == nil) {
-        [self saveFirstState:touches];
-        if (![self isOkDistanceBetweenTouches]){
-            self.state = UIGestureRecognizerStateFailed;
-        }
-    }else {
-//      Ignore all but the first two touches
-        for (UITouch *touch in touches) {
-            if (touch != self.touch1 || touch != self.touch2) {
-                [self ignoreTouch:touch forEvent:event];
+    if (self.touchesCounter != 2 && touches.count <= 2) {
+        if (touches.count == 2) {
+            [self saveFirstStateAndCheck:[touches allObjects]];
+        } else if (touches.count == 1) {
+            if (self.touchesCounter == 1){
+                [self saveFirstStateAndCheck:@[self.touch1, [touches anyObject]]];
+            } else if (self.touchesCounter == 0) {
+                UITouch *touch = [touches anyObject];
+                self.touch1 = touch;
+                self.startPoint1 = [self.touch1 locationInView:self.view];
+                self.currPoint1 = self.startPoint1;
+                self.touchesCounter = 1;
             }
         }
+    } else {
+        self.state = UIGestureRecognizerStateFailed;
     }
 }
 
 
-- (void)saveFirstState:(NSSet<UITouch *> *)ts{
-    NSArray<UITouch *> *touches = [ts allObjects];
+- (void)saveFirstStateAndCheck:(NSArray<UITouch *> *)touches {
     CGPoint p1 = [touches[0] locationInView:self.view];
     CGPoint p2 = [touches[1] locationInView:self.view];
     if (p2.y>p1.y) {
@@ -71,6 +70,10 @@
     }
     self.currPoint1 = self.startPoint1;
     self.currPoint2 = self.startPoint2;
+    self.touchesCounter = 2;
+    if (![self isOkDistanceBetweenTouches]) {
+        self.state = UIGestureRecognizerStateFailed;
+    }
 }
 
 
@@ -85,37 +88,34 @@
 // MOVE
 - (void)touchesMoved:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
     [super touchesMoved:touches withEvent:event];
-    if (![self checkMovedState]) {
+    if (self.touchesCounter == 2) {
+        [self updateState];
+    } else {
         self.state = UIGestureRecognizerStateFailed;
     }
 }
 
-- (BOOL)checkMovedState {
+- (void)updateState {
     CGPoint newCurrPoint1 = [self.touch1 locationInView:self.view];
     CGPoint newCurrPoint2 = [self.touch2 locationInView:self.view];
-    if ((newCurrPoint1.y - self.currPoint1.y >= 0) && (newCurrPoint2.y - self.currPoint2.y <= 0)) {
-        self.currPoint1 = newCurrPoint1;
-        self.currPoint2 = newCurrPoint2;
-        return YES;
-    }
-//    if backward movement was occured
-    return NO;
+    self.currPoint1 = newCurrPoint1;
+    self.currPoint2 = newCurrPoint2;
 }
 
 
 // END
 - (void)touchesEnded:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
     [super touchesEnded:touches withEvent:event];
-    if ([self checkFinalState]) {
-        self.state = UIGestureRecognizerStateEnded;
-    }else {
-        self.state = UIGestureRecognizerStateFailed;
+    if (self.touchesCounter == 2) {
+        if ([self checkFinalState]) {
+            self.state = UIGestureRecognizerStateRecognized;
+            return;
+        }
     }
+    self.state = UIGestureRecognizerStateFailed;
 }
 
 - (BOOL)checkFinalState {
-    self.currPoint1 = [self.touch1 locationInView:self.view];
-    self.currPoint2 = [self.touch2 locationInView:self.view];
 //    final condition
     if (self.currPoint1.y >= self.startPoint2.y && self.currPoint2.y <= self.startPoint1.y) {
         return YES;
@@ -127,7 +127,6 @@
 // CANCEL
 - (void)touchesCancelled:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
     [super touchesCancelled:touches withEvent:event];
-    [self resetState];
     self.state = UIGestureRecognizerStateCancelled;
 }
 
@@ -139,6 +138,7 @@
     self.startPoint2 = nilPoint;
     self.currPoint1 = nilPoint;
     self.currPoint2 = nilPoint;
+    self.touchesCounter = 0;
 }
 
 // RESET
